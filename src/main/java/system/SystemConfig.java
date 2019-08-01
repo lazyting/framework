@@ -10,7 +10,7 @@ import java.util.Properties;
 public class SystemConfig {
 
     private static Properties props = new Properties();
-    private static String[] propsFileList = {"/config.properties"};
+    private static String[] propsFileList = {"config.properties"};
 
     static {
         load();
@@ -29,7 +29,6 @@ public class SystemConfig {
     }
 
     public static String getProperty(final String name) {
-        System.out.println(props);
         return props.getProperty(name);
     }
 

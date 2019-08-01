@@ -27,8 +27,14 @@ public class RedisStringAccessorUtil {
      *
      * @param key
      */
-    public static void del(String key) {
-
+    public static boolean del(String key) {
+        try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
+            Long result = shardedJedis.del(key); //1:success 0:faile
+            return result == 1L;
+        } catch (Exception e) {
+            logger.error("String key delete faile " + e);
+        }
+        return false;
     }
 
     /**
@@ -42,7 +48,7 @@ public class RedisStringAccessorUtil {
             String result = shardedJedis.set(key, value);
             return result.equalsIgnoreCase("OK");
         } catch (Exception e) {
-
+            logger.error("String key set faile " + e);
         }
         return false;
     }
@@ -72,26 +78,30 @@ public class RedisStringAccessorUtil {
      * @param value
      */
 
-    public static void setnx(String key, String value) {
-    }
-
-    /**
-     * 向库中添加string（名称为key，值为value）同时，设定过期时间time
-     *
-     * @param key
-     * @param time
-     * @param value
-     */
-    public static void setex(String key, Integer time, String value) {
+    public static boolean setnx(String key, String value) {
+        try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
+            Long result = shardedJedis.setnx(key, value);
+            return result == 1L;
+        } catch (Exception e) {
+            logger.error("String key setnx faile " + e);
+        }
+        return false;
     }
 
     /**
      * 名称为key的string的值附加value
      *
      * @param key
-     * @param value
+     * @param appendValue
      */
-    public static void append(String key, String value) {
+    public static boolean append(String key, String appendValue) {
+        try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
+            Long result = shardedJedis.append(key, appendValue);
+            return result == 1L;
+        } catch (Exception e) {
+            logger.error("String key append faile " + e);
+        }
+        return false;
     }
 
     /**
@@ -103,6 +113,14 @@ public class RedisStringAccessorUtil {
      * @return
      */
     public static String substr(String key, int start, int end) {
+        if (start < 0 || end < start) {
+            return null;
+        }
+        try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
+            return shardedJedis.substr(key, start, end);
+        } catch (Exception e) {
+            logger.error("String key append faile " + e);
+        }
         return null;
     }
 

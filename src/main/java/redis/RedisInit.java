@@ -21,22 +21,16 @@ public class RedisInit {
      * 初始化redis连接池
      */
     static {
-        System.out.println("-=-=-=");
-        try {
-            System.out.println(maxTotal+","+maxIdle+","+maxWait+","+redisMasterHost+","+redisMasterPassword+",");
-            JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-            jedisPoolConfig.setMaxTotal(maxTotal);
-            jedisPoolConfig.setMaxIdle(maxIdle);
-            jedisPoolConfig.setMaxWaitMillis(maxWait);
+        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+        jedisPoolConfig.setMaxTotal(maxTotal);
+        jedisPoolConfig.setMaxIdle(maxIdle);
+        jedisPoolConfig.setMaxWaitMillis(maxWait);
 
-            List<JedisShardInfo> shardInfos = new ArrayList<>();
-            JedisShardInfo shardInfo = new JedisShardInfo(redisMasterHost.trim());
-            shardInfo.setPassword(redisMasterPassword);
-            shardInfos.add(shardInfo);
-            shardedJedisPool = new ShardedJedisPool(jedisPoolConfig, shardInfos);
-        }finally {
-            System.out.println(shardedJedisPool);
-        }
+        List<JedisShardInfo> shardInfos = new ArrayList<>();
+        JedisShardInfo shardInfo = new JedisShardInfo(redisMasterHost.trim());
+        shardInfo.setPassword(redisMasterPassword);
+        shardInfos.add(shardInfo);
+        shardedJedisPool = new ShardedJedisPool(jedisPoolConfig, shardInfos);
 
 
     }
