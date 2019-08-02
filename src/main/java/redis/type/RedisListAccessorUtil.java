@@ -15,14 +15,14 @@ public class RedisListAccessorUtil {
      * @param key
      * @param value
      */
-    public static boolean rpush(String key, String... value) {
+    public static Long rpush(String key, String... value) {
         try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
-            Long result = shardedJedis.rpush(key, value);
-            return result == 1L;
+            Long result = shardedJedis.rpush(key, value);//返回添加的数据个数
+            return result;
         } catch (Exception e) {
             logger.error("List rpush fail " + e);
         }
-        return false;
+        return 0L;
     }
 
     /**
@@ -31,14 +31,14 @@ public class RedisListAccessorUtil {
      * @param key
      * @param value
      */
-    public static boolean lpush(String key, String... value) {
+    public static Long lpush(String key, String... value) {
         try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
             Long result = shardedJedis.lpush(key, value);
-            return result == 1L;
+            return result;
         } catch (Exception e) {
             logger.error("List Lpush fail " + e);
         }
-        return false;
+        return 0L;
     }
 
     /**
@@ -75,22 +75,22 @@ public class RedisListAccessorUtil {
     }
 
     /**
-     * 截取名称为key的list，保留start至end之间的元素
+     * 截取名称为key的list，保留start至end之间的元素,（删除其他元素）
      *
      * @param key
      * @param start
      * @param end
      */
-    public static String ltrim(String key, long start, long end) {
+    public static boolean ltrim(String key, long start, long end) {
         if (start < 0 || end < start) {
-            return null;
+            return false;
         }
         try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
-            return shardedJedis.ltrim(key, start, end);
+            return "OK".equalsIgnoreCase(shardedJedis.ltrim(key, start, end));
         } catch (Exception e) {
             logger.error("List ltrim fail " + e);
         }
-        return null;
+        return false;
     }
 
     /**
@@ -118,16 +118,16 @@ public class RedisListAccessorUtil {
      * @param index
      * @param value
      */
-    public static String lset(String key, long index, String value) {
+    public static boolean lset(String key, long index, String value) {
         if (index < 0) {
-            return null;
+            return false;
         }
         try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
-            return shardedJedis.lset(key, index, value);
+            return "OK".equalsIgnoreCase(shardedJedis.lset(key, index, value));
         } catch (Exception e) {
             logger.error("List lset fail " + e);
         }
-        return null;
+        return false;
     }
 
     /**
@@ -135,6 +135,7 @@ public class RedisListAccessorUtil {
      * count=0,删除所有值为value的元素;
      * count>0,从头至尾删除count个值为value的元素;
      * count<0,从尾到头删除count个值为value的元素。
+     * 返回：删除的数据个数
      *
      * @param key
      * @param count

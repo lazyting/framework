@@ -80,7 +80,7 @@ public class RedisStringAccessorUtil {
 
     public static boolean setnx(String key, String value) {
         try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
-            Long result = shardedJedis.setnx(key, value);
+            Long result = shardedJedis.setnx(key, value);//1:success 0:faile
             return result == 1L;
         } catch (Exception e) {
             logger.error("String key setnx faile " + e);
@@ -90,18 +90,19 @@ public class RedisStringAccessorUtil {
 
     /**
      * 名称为key的string的值附加value
+     * 返回结果的长度（一个汉字做3个字节）
      *
      * @param key
      * @param appendValue
      */
-    public static boolean append(String key, String appendValue) {
+    public static Long append(String key, String appendValue) {
         try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
             Long result = shardedJedis.append(key, appendValue);
-            return result == 1L;
+            return result;
         } catch (Exception e) {
             logger.error("String key append faile " + e);
         }
-        return false;
+        return null;
     }
 
     /**
@@ -123,13 +124,4 @@ public class RedisStringAccessorUtil {
         }
         return null;
     }
-
-    //    mget(String key1, key2,…, key N); //返回库中多个string（它们的名称为key1，key2…）的value
-    //    getset(String key, String value); //给名称为key的string赋予上一次的value
-    //    decrby(String key, integer); //名称为key的string减少integer
-    //    decr(String key); //名称为key的string减1操作
-    //    incrby(String key, integer); //名称为key的string增加integer
-    //    incr(String key); //名称为key的string增1操作
-    //    msetnx(String key1, value1, key2, value2,…key N, value N); //如果所有名称为key i的string都不存在，则向库中添加string，名称           key i赋值为value i
-    //    mset(String key1, value1, key2, value2,…key N, value N); //同时给多个string赋值，名称为key i的string赋值value i
 }

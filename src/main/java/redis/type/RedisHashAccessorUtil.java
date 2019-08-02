@@ -12,7 +12,7 @@ public class RedisHashAccessorUtil {
     private static Logger logger = Logger.getLogger(RedisHashAccessorUtil.class);
 
     /**
-     * 向名称为key的hash中添加元素field<—>value
+     * 向名称为key的hash中添加元素field<—>value：1成功；0失败。
      *
      * @param key
      * @param field
@@ -20,7 +20,8 @@ public class RedisHashAccessorUtil {
      */
     public static boolean hset(String key, String field, String value) {
         try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
-            return shardedJedis.hset(key, field, value) == 1L;
+            Long res = shardedJedis.hset(key, field, value);
+            return res == 1L;
         } catch (Exception e) {
             logger.error("Hash hset fail ", e);
         }
@@ -35,7 +36,8 @@ public class RedisHashAccessorUtil {
      */
     public static String hget(String key, String field) {
         try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
-            return shardedJedis.hget(key, field);
+            String res = shardedJedis.hget(key, field);
+            return res;
         } catch (Exception e) {
             logger.error("Hash hget fail ", e);
         }
@@ -51,7 +53,8 @@ public class RedisHashAccessorUtil {
      */
     public static List<String> hmget(String key, String... field) {
         try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
-            return shardedJedis.hmget(key, field);
+            List<String> res = shardedJedis.hmget(key, field);
+            return res;
         } catch (Exception e) {
             logger.error("Hash hmget fail ", e);
         }
@@ -112,13 +115,14 @@ public class RedisHashAccessorUtil {
      * @param field
      * @return
      */
-    public static boolean hdel(String key, String... field) {
+    public static Long hdel(String key, String... field) {
         try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
-            return shardedJedis.hdel(key, field) == 1L;
+            Long res = shardedJedis.hdel(key, field);//返回删除的个数
+            return res;
         } catch (Exception e) {
             logger.error("Hash hdel fail ", e);
         }
-        return false;
+        return 0l;
     }
 
     /**
@@ -129,11 +133,12 @@ public class RedisHashAccessorUtil {
      */
     public static Long hlen(String key) {
         try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
-            return shardedJedis.hlen(key);
+            Long res = shardedJedis.hlen(key);
+            return res;
         } catch (Exception e) {
             logger.error("Hash hlen fail ", e);
         }
-        return 0L;
+        return null;
     }
 
     /**
@@ -143,7 +148,8 @@ public class RedisHashAccessorUtil {
      */
     public static Set<String> hkeys(String key) {
         try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
-            return shardedJedis.hkeys(key);
+            Set<String> res = shardedJedis.hkeys(key);
+            return res;
         } catch (Exception e) {
             logger.error("Hash hkeys fail ", e);
         }

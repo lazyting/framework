@@ -9,33 +9,35 @@ public class RedisSetAccessorUtil {
     private static Logger logger = Logger.getLogger(RedisSetAccessorUtil.class);
 
     /**
-     * 向名称为key的set中添加元素member
+     * 向名称为key的set中添加元素member，返回插入的数据个数
      *
      * @param key
      * @param member
      */
-    public static boolean sadd(String key, String... member) {
+    public static Long sadd(String key, String... member) {
         try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
-            return shardedJedis.sadd(key, member) == 1L;
+            Long res = shardedJedis.sadd(key, member);
+            return res;
         } catch (Exception e) {
             logger.error("Set sadd fail ", e);
         }
-        return false;
+        return null;
     }
 
     /**
-     * 删除名称为key的set中的元素member
+     * 删除名称为key的set中的元素member，返回删除的数据个数
      *
      * @param key
      * @param member
      */
-    public static boolean srem(String key, String... member) {
+    public static Long srem(String key, String... member) {
         try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
-            return shardedJedis.srem(key, member) == 1L;
+            Long res = shardedJedis.srem(key, member);
+            return res;
         } catch (Exception e) {
             logger.error("Set srem fail ", e);
         }
-        return false;
+        return null;
     }
 
     /**
@@ -51,14 +53,17 @@ public class RedisSetAccessorUtil {
         }
         return null;
     }
-
-    public boolean del(String key) {
-        ShardedJedis shardedJedis = null;
-        try {
-            shardedJedis = RedisInit.getShardedJedis();
-            return shardedJedis.del(key) == 1L;
+    /**
+     * 删除一个String key
+     *
+     * @param key
+     */
+    public static boolean del(String key) {
+        try (ShardedJedis shardedJedis = RedisInit.getShardedJedis()) {
+            Long result = shardedJedis.del(key); //1:success 0:faile
+            return result == 1L;
         } catch (Exception e) {
-            logger.error("Set spop fail ", e);
+            logger.error("String key delete faile " + e);
         }
         return false;
     }
