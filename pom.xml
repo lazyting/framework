@@ -132,6 +132,13 @@
             <artifactId>persistence-api</artifactId>
             <version>1.0.2</version>
         </dependency>
+
+        <!-- mail -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4</version>
+        </dependency>
     </dependencies>
 
     <!--maven 项目设置jdk-->
