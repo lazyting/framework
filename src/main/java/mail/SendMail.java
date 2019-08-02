@@ -1,6 +1,7 @@
 package mail;
 
 import exception.ToolException;
+import model.mail.MailModel;
 import system.SystemConfig;
 import utils.EmptyUtil;
 
@@ -21,9 +22,10 @@ public class SendMail {
      *
      * @param senderAccount  发件人账户名
      * @param senderPassword 发件人账户密码
+     * @param mailModel      邮件信息
      * @throws Exception
      */
-    public static void sendMail(String senderAccount, String senderPassword) throws Exception {
+    public static void sendMail(String senderAccount, String senderPassword, MailModel mailModel) throws Exception {
         //1、连接邮件服务器的参数配置
         Properties props = new Properties();
         //设置用户的认证方式
@@ -37,7 +39,7 @@ public class SendMail {
         //设置调试信息在控制台打印出来
         session.setDebug(Boolean.parseBoolean(SystemConfig.getProperty("ifConsoleInfo")));
         //3、创建邮件的实例对象
-        Message msg = getMimeMessage(session, getChatInfo());
+        Message msg = getMimeMessage(session, mailModel);
         //4、根据session对象获取邮件传输对象Transport
         Transport transport = session.getTransport();
         //设置发件人的账户名和密码
@@ -52,17 +54,6 @@ public class SendMail {
         transport.close();
     }
 
-    private static Map<String, String> getChatInfo() {
-        Map<String, String> communicationInfo = new HashMap<>();
-        communicationInfo.put("sendMailPerson", "");
-        communicationInfo.put("receiveMailPerson", "");
-        communicationInfo.put("ccMailPerson", "");
-        communicationInfo.put("bccMailPerson", "");
-        communicationInfo.put("mailTitle", "");
-        communicationInfo.put("mailText", "");
-        return communicationInfo;
-    }
-
     /**
      * 获得创建一封邮件的实例对象
      *
@@ -71,14 +62,14 @@ public class SendMail {
      * @throws MessagingException
      * @throws Exception
      */
-    public static MimeMessage getMimeMessage(Session session, Map<String, String> communicationInfo) throws Exception {
-        if (EmptyUtil.isEmpty(communicationInfo)) {
+    public static MimeMessage getMimeMessage(Session session, MailModel mailModel) throws Exception {
+        if (EmptyUtil.isEmpty(mailModel)) {
             throw new ToolException("邮件交流双方信息为空！！！");
         }
         //创建一封邮件的实例对象
         MimeMessage msg = new MimeMessage(session);
         //设置发件人地址
-        String sendMailPerson = communicationInfo.get("sendMailPerson");
+        String sendMailPerson = mailModel.getSendMailPerson();
         if (EmptyUtil.isEmpty(sendMailPerson)) {
             throw new ToolException("邮件发送人不能为空！！！");
         }
@@ -89,23 +80,23 @@ public class SendMail {
          * MimeMessage.RecipientType.CC：抄送
          * MimeMessage.RecipientType.BCC：密送
          */
-        String receiveMailPerson = communicationInfo.get("receiveMailPerson");
+        String receiveMailPerson = mailModel.getReceiveMailPerson();
         if (EmptyUtil.isEmpty(receiveMailPerson)) {
             throw new ToolException("邮件收送人不能为空！！！");
         }
         msg.setRecipient(MimeMessage.RecipientType.TO, new InternetAddress(receiveMailPerson));
-        String ccMailPerson = communicationInfo.get("ccMailPerson");
+        String ccMailPerson = mailModel.getCcMailPerson();
         if (EmptyUtil.isNotEmpty(ccMailPerson)) {
             msg.setRecipient(MimeMessage.RecipientType.CC, new InternetAddress(ccMailPerson));
         }
-        String bccMailPerson = communicationInfo.get("bccMailPerson");
+        String bccMailPerson = mailModel.getBccMailPerson();
         if (EmptyUtil.isNotEmpty(bccMailPerson)) {
             msg.setRecipient(MimeMessage.RecipientType.BCC, new InternetAddress(bccMailPerson));
         }
         //设置邮件主题
-        msg.setSubject(communicationInfo.get("mailTitle"), "UTF-8");
+        msg.setSubject(mailModel.getMailTitle(), "UTF-8");
         //设置邮件正文
-        msg.setContent(communicationInfo.get("mailText"), "text/html;charset=UTF-8");
+        msg.setContent(mailModel.getMailText(), "text/html;charset=UTF-8");
         //设置邮件的发送时间,默认立即发送
         msg.setSentDate(new Date());
         return msg;
