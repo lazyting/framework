@@ -2,6 +2,7 @@ package utils;
 
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
+import exception.ToolException;
 import security.Base64Coder;
 import sun.misc.BASE64Decoder;
 
@@ -178,5 +179,28 @@ public class FileUtil {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    /**
+     * 删除单个文件
+     *
+     * @param sPath 被删除文件的文件名
+     * @return 单个文件删除成功返回true，否则返回false
+     */
+    public static boolean deleteFile(String sPath)
+    {
+        File file = new File(sPath);
+        // 路径为文件且不为空则进行删除
+        if (!file.exists())
+        {
+            file = null;
+            throw new ToolException("[" + sPath + "] not exist");
+        }
+
+        if (file.isDirectory())
+        {
+            throw new ToolException("[" + sPath + "] is directory, can out delete");
+        }
+        return file.delete();
     }
 }
