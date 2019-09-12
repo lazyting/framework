@@ -3,7 +3,7 @@ package utils;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 import exception.ToolException;
-import security.Base64Coder;
+import security.Coder;
 import sun.misc.BASE64Decoder;
 
 import javax.imageio.ImageIO;
@@ -93,7 +93,7 @@ public class FileUtil {
                 outStream.write(buffer, 0, len);
             }
             // 对字节数组Base64编码
-            return Base64Coder.encodeBase64(outStream.toByteArray());
+            return Coder.encodeBase64(outStream.toByteArray());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -157,7 +157,7 @@ public class FileUtil {
     }
 
     //base64字符串转化成图片
-    public static boolean GenerateImage(String imgStr,String newFilePath) {
+    public static boolean GenerateImage(String imgStr, String newFilePath) {
         //对字节数组字符串进行Base64解码并生成图片
         if (imgStr == null) //图像数据为空
             return false;
@@ -187,18 +187,16 @@ public class FileUtil {
      * @param sPath 被删除文件的文件名
      * @return 单个文件删除成功返回true，否则返回false
      */
-    public static boolean deleteFile(String sPath)
-    {
+    public static boolean deleteFile(String sPath) {
+        System.out.println(sPath);
         File file = new File(sPath);
         // 路径为文件且不为空则进行删除
-        if (!file.exists())
-        {
+        if (!file.exists()) {
             file = null;
             throw new ToolException("[" + sPath + "] not exist");
         }
 
-        if (file.isDirectory())
-        {
+        if (file.isDirectory()) {
             throw new ToolException("[" + sPath + "] is directory, can out delete");
         }
         return file.delete();
