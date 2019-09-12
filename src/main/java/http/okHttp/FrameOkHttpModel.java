@@ -5,7 +5,7 @@ import java.util.Map;
 public class FrameOkHttpModel {
     private String url;
     private String data;
-    private OkHttpConstant.HttpMethod httpMethod;
+    private OkHttpConstant.HttpMethod httpMethod = OkHttpConstant.HttpMethod.GET;
     private Map<String, String> headerMap;
     private Map<String, String> formData;
     private String contentType;

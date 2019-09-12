@@ -40,8 +40,8 @@ public class FrameOkHttpClient {
     }
 
     private static void getHttpClient() {
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        builder.connectTimeout(OkHttpConstant.CONNECT_TIME_OUT, TimeUnit.MILLISECONDS)
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(OkHttpConstant.CONNECT_TIME_OUT, TimeUnit.MILLISECONDS)
                 .readTimeout(OkHttpConstant.READ_TIME_OUT, TimeUnit.MILLISECONDS)
                 .writeTimeout(OkHttpConstant.WRITE_TIME_OUT, TimeUnit.MILLISECONDS);
         httpClient = builder.build();
@@ -182,7 +182,13 @@ public class FrameOkHttpClient {
 
     }
 
-
+    /**
+     * 同步请求
+     *
+     * @param request
+     * @param hc
+     * @return
+     */
     public static String responseStr(Request request, OkHttpClient hc) {
 
         Response response = null;
@@ -191,6 +197,24 @@ public class FrameOkHttpClient {
             return response.body().string();
 
         } catch (IOException e) {
+            throw new RuntimeException("response error!!", e);
+        }
+    }
+
+    /**
+     * 异步请求
+     *
+     * @param request
+     * @param hc
+     * @return
+     */
+    public static void responseStr(Request request, OkHttpClient hc, OkHttpCallback callback) {
+        final String[] xxx = {null};
+        Response response = null;
+        try {
+            Call call = hc.newCall(request);
+            call.enqueue(callback);
+        } catch (Exception e) {
             throw new RuntimeException("response error!!", e);
         }
     }
