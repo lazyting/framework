@@ -1,6 +1,6 @@
-package http.okHttp;
+package http;
 
-public class OkHttpConstant {
+public class HttpConstant {
     /**
      * 普通格式
      */

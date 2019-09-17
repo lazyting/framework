@@ -1,5 +1,6 @@
 package http.okHttp;
 
+import http.HttpConstant;
 import okhttp3.*;
 import okhttp3.Request.Builder;
 import utils.EmptyUtil;
@@ -41,9 +42,9 @@ public class FrameOkHttpClient {
 
     private static void getHttpClient() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .connectTimeout(OkHttpConstant.CONNECT_TIME_OUT, TimeUnit.MILLISECONDS)
-                .readTimeout(OkHttpConstant.READ_TIME_OUT, TimeUnit.MILLISECONDS)
-                .writeTimeout(OkHttpConstant.WRITE_TIME_OUT, TimeUnit.MILLISECONDS);
+                .connectTimeout(HttpConstant.CONNECT_TIME_OUT, TimeUnit.MILLISECONDS)
+                .readTimeout(HttpConstant.READ_TIME_OUT, TimeUnit.MILLISECONDS)
+                .writeTimeout(HttpConstant.WRITE_TIME_OUT, TimeUnit.MILLISECONDS);
         httpClient = builder.build();
     }
 
@@ -57,9 +58,9 @@ public class FrameOkHttpClient {
             OkHttpClient.Builder builder = new OkHttpClient.Builder();
             builder.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
             builder.hostnameVerifier((hostname, session) -> true);
-            builder.connectTimeout(OkHttpConstant.CONNECT_TIME_OUT, TimeUnit.MILLISECONDS)
-                    .readTimeout(OkHttpConstant.READ_TIME_OUT, TimeUnit.MILLISECONDS)
-                    .writeTimeout(OkHttpConstant.WRITE_TIME_OUT, TimeUnit.MILLISECONDS);
+            builder.connectTimeout(HttpConstant.CONNECT_TIME_OUT, TimeUnit.MILLISECONDS)
+                    .readTimeout(HttpConstant.READ_TIME_OUT, TimeUnit.MILLISECONDS)
+                    .writeTimeout(HttpConstant.WRITE_TIME_OUT, TimeUnit.MILLISECONDS);
             httpsClient = builder.build();
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             e.printStackTrace();
@@ -89,7 +90,7 @@ public class FrameOkHttpClient {
         return buildRequest(model.getUrl(), model.getData(), model.getHttpMethod(), model.getHeaderMap(), model.getContentType(), model.getFormData());
     }
 
-    public static Request buildRequest(String url, String data, OkHttpConstant.HttpMethod httpMethod, Map<String, String> headerMap, String contentType, Map<String, String> formData) {
+    public static Request buildRequest(String url, String data, HttpConstant.HttpMethod httpMethod, Map<String, String> headerMap, String contentType, Map<String, String> formData) {
         Builder builder = new Request.Builder().url(url);
         if (EmptyUtil.isNotEmpty(headerMap)) {
             builder.headers(Headers.of(headerMap));

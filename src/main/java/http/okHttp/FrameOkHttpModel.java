@@ -1,11 +1,13 @@
 package http.okHttp;
 
+import http.HttpConstant;
+
 import java.util.Map;
 
 public class FrameOkHttpModel {
     private String url;
     private String data;
-    private OkHttpConstant.HttpMethod httpMethod = OkHttpConstant.HttpMethod.GET;
+    private HttpConstant.HttpMethod httpMethod = HttpConstant.HttpMethod.GET;
     private Map<String, String> headerMap;
     private Map<String, String> formData;
     private String contentType;
@@ -34,11 +36,11 @@ public class FrameOkHttpModel {
         this.data = data;
     }
 
-    public OkHttpConstant.HttpMethod getHttpMethod() {
+    public HttpConstant.HttpMethod getHttpMethod() {
         return httpMethod;
     }
 
-    public void setHttpMethod(OkHttpConstant.HttpMethod httpMethod) {
+    public void setHttpMethod(HttpConstant.HttpMethod httpMethod) {
         this.httpMethod = httpMethod;
     }
 
